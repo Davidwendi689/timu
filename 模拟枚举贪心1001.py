@@ -1,49 +1,49 @@
 import sys
+s = sys.stdin.read()
+n = len(s)
+i = 0
+#a是状态（0 普通、1 字符串、2 注释）b表示保存输出c记录注释起点。
+a = 0
+b = []
+c = -1
+while i < n:
+    if a == 0:
+#转义的双引号原样保留，不转类型或者说状态
+        if s[i] == '\\' and i < n - 1 and s[i + 1] == '"':
+            b.append(s[i])
+            b.append(s[i + 1])
+            i += 2
+            continue
+        elif s[i] == '"':
+            b.append(s[i])
+            a = 1
+        elif s[i] == '/' and i < n - 1 and s[i + 1] == '*':
+            a = 2
+            c = i
+            i += 2
+            continue
+        else:
+            b.append(s[i])
+    elif a == 1:
+        if s[i] == '\\' and i < n - 1 and s[i + 1] == '"':
+            b.append(s[i])
+            b.append(s[i + 1])
+            i += 2
+            continue
+        elif s[i] == '"':
+            b.append(s[i])
+            a = 0
+        else:
+            b.append(s[i])
+    elif a == 2:
+        if s[i] == '*' and i < n - 1 and s[i + 1] == '/':
+            a = 0
+            c = -1
+            i += 2
+            continue
+    i += 1
+# 未闭合的注释从开始到结束样保留。
+if a == 2:
+    b.append(s[c:])
 
-middle = {
-    "13": "2", "31": "2",
-    "17": "4", "71": "4",
-    "39": "6", "93": "6",
-    "79": "8", "97": "8",
-    "19": "5", "91": "5",
-    "37": "5", "73": "5",
-    "28": "5", "82": "5",
-    "46": "5", "64": "5"
-}
-
-for line in sys.stdin:
-    s = line.strip()
-
-    if not s:
-        continue
-
-    used = []
-    prev = ""
-    good = True
-
-    for ch in s:
-
-        # 检查数字是否重复
-        if ch in used:
-            good = False
-            break
-
-        # 检查上一个数字到当前数字的连线
-        if prev != "":
-            key = prev + ch
-
-            if key in middle:
-                need = middle[key]
-
-                if need not in used:
-                    good = False
-                    break
-
-        # 当前数字合法，记录下来
-        used.append(ch)
-        prev = ch
-
-    if good:
-        print("YES")
-    else:
-        print("NO")
+sys.stdout.write(''.join(b))

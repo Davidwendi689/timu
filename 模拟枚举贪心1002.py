@@ -1,5 +1,4 @@
 import sys
-
 middle = {
     "13": "2", "31": "2",
     "17": "4", "71": "4",
@@ -10,17 +9,13 @@ middle = {
     "28": "5", "82": "5",
     "46": "5", "64": "5"
 }
-
 for line in sys.stdin:
     s = line.strip()
-
     if not s:
         continue
-
     used = []
     prev = ""
     good = True
-
     for ch in s:
 
         # 检查数字是否重复

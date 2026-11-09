@@ -1,38 +1,31 @@
-import sys
-
-def solve():
-    data = list(map(int, sys.stdin.read().strip().split()))
-    if not data:
-        return
-    cnt = (data + [0] * 10)[:10]
-    total = sum(cnt)
-
-    # 奇数个的数字
-    odds = [d for d in range(10) if cnt[d] % 2 == 1]
-    if len(odds) > 1:
+a = list(map(int, input().split()))
+total = sum(a)
+b = []
+c = []
+for d in range(10):
+    if a[d] % 2 == 1:
+        b.append(d)
+#每两个相同的数字，取一个放到左半边
+    c.extend([str(d)] * (a[d] // 2))
+#出现奇数次的数字最多只能有一个
+if total == 0 or len(b) > 1:
+    print(-1)
+elif total == 1:
+    print(a.index(1))
+else:
+#在左半边寻找最小的非零数字
+    pos = -1
+    for i in range(len(c)):
+        if c[i] != '0':
+            pos = i
+            break#多位数不能以零开头
+    if pos == -1:
         print(-1)
-        return
-    middle = str(odds[0]) if odds else ""
-
-    # 左半边：每个数字取一半，按 0~9 排好，已经是从小到大
-    left = []
-    for d in range(10):
-        left.extend([str(d)] * (cnt[d] // 2))
-
-    # 只有一位数
-    if total == 1:
-        print(middle)
-        return
-
-    # 找左半边里第一个非零数字，换到开头
-    idx = next((i for i, ch in enumerate(left) if ch != '0'), None)
-    if idx is None:
-        print(-1)
-        return
-    left[0], left[idx] = left[idx], left[0]
-
-    left_str = ''.join(left)
-    print(left_str + middle + left_str[::-1])
-
-if __name__ == '__main__':
-    solve()
+    else:
+#把最小的非零数字放到第一位
+        c[0], c[pos] = c[pos], c[0]
+        left = ''.join(c)
+#把出现奇数次的数字放在中间
+        e = str(b[0]) if b else ''
+        ans = left + e + left[::-1]
+        print(ans)
